@@ -17,7 +17,7 @@
     "mongoose",
     "random"
   ],
-  "author": "Larry Price <larry.price.dev@gmail.com>",
+  "author": "Larry Price <larry.price.dev@gmail.com> (http://larry-price.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/larryprice/mongoose-simple-random/issues"
