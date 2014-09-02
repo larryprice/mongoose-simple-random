@@ -35,16 +35,17 @@ describe('mongoose-simple-random', function() {
     });
   });
 
-  it('gets a single doc at random', function() {
-    Test.findRandom(function(err, result) {
+  it('gets a single doc at random', function(done) {
+    Test.findOneRandom(function(err, result) {
       should.not.exist(err);
       result.should.have.property('message');
       result.should.have.property('_id');
       result.should.have.property('__v');
+      done();
     });
   });
 
-  it('gets 3 docs at random', function() {
+  it('gets 3 docs at random', function(done) {
     Test.findRandom({}, {}, {
       count: 3
     }, function(err, result) {
@@ -55,6 +56,7 @@ describe('mongoose-simple-random', function() {
         result[i].should.have.property('_id');
         result[i].should.have.property('__v');
       }
+      done();
     });
   });
 });
