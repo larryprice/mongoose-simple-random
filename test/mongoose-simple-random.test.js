@@ -1,4 +1,4 @@
-var random = require('../lib/plugins/mongoose-simple-random'),
+var random = require('../mongoose-simple-random'),
   mockgoose = require('mockgoose'),
   mongoose = require('mongoose'),
   Schema = mongoose.Schema,
