@@ -1,6 +1,6 @@
 {
   "name": "mongoose-simple-random",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Simple and easy-to-use NodeJS Mongoose Schema plugin to pull random documents",
   "main": "mongoose-simple-random.js",
   "directories": {

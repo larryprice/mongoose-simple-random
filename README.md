@@ -21,13 +21,13 @@ s.plugin(random);
 Test = mongoose.model('Test', s);
 
 // Find a single random document
-s.findRandom(function(err, result) {
+s.findOneRandom(function(err, result) {
   if (!err) {
     console.log(result);
   }
 });
 
-// Find "count" random documents (defaults to 1)
+// Find "count" random documents (defaults to array of 1)
 s.findRandom({}, {}, {count: 5}, function(err, results) {
   if (!err) {
     console.log(results);
@@ -59,3 +59,4 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 ## Release History
 
 * 0.1.0 Initial release
+* 0.2.0 API change - findRandom always returns array, findOneRandom returns single item
