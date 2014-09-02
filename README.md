@@ -1,7 +1,7 @@
 ### mongoose-simple-random
 
-Author: Larry Price 
-Website: [larry-price.com](http://larry-price.com) 
+Author: Larry Price  
+Website: [larry-price.com](http://larry-price.com)  
 Email: <larry.price.dev@gmail.com> 
 
 ####Description
