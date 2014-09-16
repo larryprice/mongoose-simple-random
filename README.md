@@ -21,14 +21,14 @@ s.plugin(random);
 Test = mongoose.model('Test', s);
 
 // Find a single random document
-s.findOneRandom(function(err, result) {
+Test.findOneRandom(function(err, result) {
   if (!err) {
     console.log(result);
   }
 });
 
 // Find "count" random documents (defaults to array of 1)
-s.findRandom({}, {}, {count: 5}, function(err, results) {
+Test.findRandom({}, {}, {count: 5}, function(err, results) {
   if (!err) {
     console.log(results);
   }
@@ -38,7 +38,7 @@ s.findRandom({}, {}, {count: 5}, function(err, results) {
 var filter = { playlist: { $in: ['hip-hop', 'rap'] } };
 var fields = { name: 1, description: 0 };
 var options = { skip: 10, limit: 10 };
-s.findRandom(filter, fields, options, function(err, results) {
+Test.findRandom(filter, fields, options, function(err, results) {
   if (!err) {
     console.log(results);
   }
