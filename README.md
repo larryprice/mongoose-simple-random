@@ -60,3 +60,4 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 * 0.1.0 Initial release
 * 0.2.0 API change - findRandom always returns array, findOneRandom returns single item
+* 0.2.1 README update
