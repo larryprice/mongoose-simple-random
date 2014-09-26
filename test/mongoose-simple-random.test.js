@@ -47,7 +47,7 @@ describe('mongoose-simple-random', function() {
 
   it('gets 3 docs at random', function(done) {
     Test.findRandom({}, {}, {
-      count: 3
+      limit: 3
     }, function(err, result) {
       should.not.exist(err);
       result.should.have.length(3);
@@ -55,6 +55,13 @@ describe('mongoose-simple-random', function() {
         result[i].should.have.property('message');
         result[i].should.have.property('_id');
         result[i].should.have.property('__v');
+      }
+      // check that they're distinct
+      for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+          if (i == j) continue;
+          result[i].should.not.be.equal(result[j]);
+        }
       }
       done();
     });
