@@ -1,6 +1,6 @@
 module.exports = exports = function(schema) {
-  schema.statics.findRandom = function(conditions, fields, options, callback) {
-    var args = checkParams(conditions, fields, options, callback);
+  schema.statics.findRandom = function(conditions, fields, options, populateFields, callback) {
+    var args = checkParams(conditions, fields, options, populateFields, callback);
 
     var limit = 1;
 
@@ -18,7 +18,10 @@ module.exports = exports = function(schema) {
       var start = Math.max(0, Math.floor((num-limit)*Math.random()));
       args.options.skip = start;
       args.options.limit = limit;
-      _this.find(args.conditions, args.fields, args.options).exec(function(err, docs) {
+      _this.find(args.conditions, args.fields, args.options)
+           .populate(populateFields)
+           .exec(function(err, docs)
+      {
         if (err) {
           return args.callback(err, undefined);
         }
@@ -27,8 +30,8 @@ module.exports = exports = function(schema) {
     });
   };
 
-  schema.statics.findOneRandom = function(conditions, fields, options, callback) {
-    var args = checkParams(conditions, fields, options, callback);
+  schema.statics.findOneRandom = function(conditions, fields, options, populateFields, callback) {
+    var args = checkParams(conditions, fields, options, populateFields, callback);
 
     if (args.options.limit) {
       limit = args.options.limit;
@@ -43,7 +46,10 @@ module.exports = exports = function(schema) {
       }
       var start = Math.max(0, Math.floor(num*Math.random()));
       args.options.skip = start;
-      _this.findOne(args.conditions, args.fields, args.options).exec(function(err, doc) {
+      _this.findOne(args.conditions, args.fields, args.options)
+           .populate(populateFields)
+           .exec(function(err, doc)
+      {
         if (err) {
           return args.callback(err, undefined);
         }
@@ -52,7 +58,7 @@ module.exports = exports = function(schema) {
     });
   };
 
-  var checkParams = function(conditions, fields, options, callback) {
+  var checkParams = function(conditions, fields, options, populateFields, callback) {
     if (typeof conditions === 'function') {
       callback = conditions;
       conditions = {};
@@ -65,6 +71,9 @@ module.exports = exports = function(schema) {
     } else if (typeof options === 'function') {
       callback = options;
       options = {};
+    } else if (typeof populateFields === 'function') {
+      callback = populateFields;
+      populateFields = [];
     }
 
     if (options.skip) {
@@ -75,6 +84,7 @@ module.exports = exports = function(schema) {
       conditions: conditions,
       fields: fields,
       options: options,
+      populateFields: populateFields,
       callback: callback
     }
   };
