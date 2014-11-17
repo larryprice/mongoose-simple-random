@@ -37,7 +37,7 @@ Test.findRandom({}, {}, {limit: 5}, function(err, results) {
 // Parameters match parameters for "find"
 var filter = { genre: { $in: ['adventure', 'point-and-click'] } };
 var fields = { name: 1, description: 0 };
-var options = { skip: 10, limit: 10 };
+var options = { skip: 10, limit: 10, sort: { field_1: 1, field_2: -1 } };
 Test.findRandom(filter, fields, options, function(err, results) {
   if (!err) {
     console.log(results); // 10 elements, name only, in genres "adventure" and "point-and-click" 
