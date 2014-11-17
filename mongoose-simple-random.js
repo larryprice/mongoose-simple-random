@@ -18,7 +18,9 @@ module.exports = exports = function(schema) {
       var start = Math.max(0, Math.floor((num-limit)*Math.random()));
       args.options.skip = start;
       args.options.limit = limit;
-      _this.find(args.conditions, args.fields, args.options).exec(function(err, docs) {
+      _this.find(args.conditions, args.fields, args.options)
+      .sort(args.options.sort)
+      .exec(function(err, docs) {
         if (err) {
           return args.callback(err, undefined);
         }
