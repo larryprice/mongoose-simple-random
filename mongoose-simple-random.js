@@ -1,5 +1,5 @@
-module.exports = exports = function(schema) {
-  schema.statics.findRandom = function(conditions, fields, options, callback) {
+module.exports = exports = function (schema) {
+  schema.statics.findRandom = function (conditions, fields, options, callback) {
     var args = checkParams(conditions, fields, options, callback);
 
     var limit = 1;
@@ -11,14 +11,15 @@ module.exports = exports = function(schema) {
 
     var _this = this;
 
-    _this.count(args.conditions, function(err, num) {
+    _this.count(args.conditions, function (err, num) {
       if (err) {
         return args.callback(err, undefined);
       }
-      var start = Math.max(0, Math.floor((num-limit)*Math.random()));
+      var start = Math.max(0, Math.floor((num - limit) * Math.random()));
+      console.log(start)
       args.options.skip = start;
       args.options.limit = limit;
-      _this.find(args.conditions, args.fields, args.options).exec(function(err, docs) {
+      _this.find(args.conditions, args.fields, args.options).exec(function (err, docs) {
         if (err) {
           return args.callback(err, undefined);
         }
@@ -27,7 +28,7 @@ module.exports = exports = function(schema) {
     });
   };
 
-  schema.statics.findOneRandom = function(conditions, fields, options, callback) {
+  schema.statics.findOneRandom = function (conditions, fields, options, callback) {
     var args = checkParams(conditions, fields, options, callback);
 
     if (args.options.limit) {
@@ -37,13 +38,13 @@ module.exports = exports = function(schema) {
 
     var _this = this;
 
-    _this.count(args.conditions, function(err, num) {
+    _this.count(args.conditions, function (err, num) {
       if (err) {
         return args.callback(err, undefined);
       }
-      var start = Math.max(0, Math.floor(num*Math.random()));
+      var start = Math.max(0, Math.floor(num * Math.random()));
       args.options.skip = start;
-      _this.findOne(args.conditions, args.fields, args.options).exec(function(err, doc) {
+      _this.findOne(args.conditions, args.fields, args.options).exec(function (err, doc) {
         if (err) {
           return args.callback(err, undefined);
         }
@@ -52,7 +53,7 @@ module.exports = exports = function(schema) {
     });
   };
 
-  var checkParams = function(conditions, fields, options, callback) {
+  var checkParams = function (conditions, fields, options, callback) {
     if (typeof conditions === 'function') {
       callback = conditions;
       conditions = {};
