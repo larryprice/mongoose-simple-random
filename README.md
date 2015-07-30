@@ -1,10 +1,10 @@
 ### mongoose-simple-random
 
 Author: Larry Price  
-Website: [larry-price.com](http://larry-price.com)  
+Website: [larry-price.com](https://larry-price.com)  
 Email: <larry.price.dev@gmail.com> 
 
-####Description
+#### Description
 
 Simple and easy-to-use NodeJS Mongoose Schema plugin to find random documents.
 
