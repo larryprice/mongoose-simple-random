@@ -102,5 +102,20 @@ describe('mongoose-simple-random', function () {
         done();
       });
     });
+
+    it('doesnt freak out when limit is huge', function (done) {
+      Test.findRandom({}, {}, {
+        limit: 1000
+      }, function (err, result) {
+        should.not.exist(err);
+        should.exist(result);
+        result.should.have.length(1);
+        result[0].should.have.property('message');
+        result[0].message.should.equal("this");
+        result[0].should.have.property('_id');
+        result[0].should.have.property('__v');
+        done();
+      });
+    });
   });
 });

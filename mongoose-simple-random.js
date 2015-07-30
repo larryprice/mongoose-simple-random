@@ -15,6 +15,9 @@ module.exports = exports = function (schema) {
       if (err) {
         return args.callback(err, undefined);
       }
+      if (limit > num) {
+        limit = num;
+      }
       var start = Math.floor(Math.random() * (num - limit + 1));
       args.options.skip = start;
       args.options.limit = limit;
