@@ -1,35 +1,38 @@
-module.exports = exports = function (schema) {
-  schema.statics.findRandom = function (conditions, fields, options, callback) {
-    var args = checkParams(conditions, fields, options, callback);
+var _ = require('lodash');
 
-    var limit = 1;
+function asyncLoop(iterations, func, callback) {
+  var index = 0;
+  var done = false;
+  var loop = {
+    next: function () {
+      if (done) {
+        return;
+      }
 
-    if (args.options.limit) {
-      limit = args.options.limit;
-      delete args.options.limit;
+      if (index < iterations) {
+        index++;
+        func(loop);
+
+      } else {
+        done = true;
+        callback();
+      }
+    },
+
+    iteration: function () {
+      return index - 1;
+    },
+
+    break: function () {
+      done = true;
+      callback();
     }
-
-    var _this = this;
-
-    _this.count(args.conditions, function (err, num) {
-      if (err) {
-        return args.callback(err, undefined);
-      }
-      if (limit > num) {
-        limit = num;
-      }
-      var start = Math.floor(Math.random() * (num - limit + 1));
-      args.options.skip = start;
-      args.options.limit = limit;
-      _this.find(args.conditions, args.fields, args.options).exec(function (err, docs) {
-        if (err) {
-          return args.callback(err, undefined);
-        }
-        return args.callback(undefined, docs);
-      });
-    });
   };
+  loop.next();
+  return loop;
+}
 
+module.exports = exports = function (schema) {
   schema.statics.findOneRandom = function (conditions, fields, options, callback) {
     var args = checkParams(conditions, fields, options, callback);
 
@@ -54,6 +57,46 @@ module.exports = exports = function (schema) {
       });
     });
   };
+
+  schema.statics.findRandom = function (conditions, fields, options, callback) {
+    var args = checkParams(conditions, fields, options, callback);
+    var _this = this;
+    var limit = 1;
+
+    // Since we gonna use the findOneRandom function to get more then one document from collection
+    // we need to store one's _ids that already have been found in order to avoid duplicates in the result set.
+    var itemsFound = [];
+
+    if (args.options.limit) {
+      limit = args.options.limit;
+      delete args.options.limit;
+    }
+
+    asyncLoop(limit, function (loop) {
+        if (itemsFound.length) {
+          _.merge(conditions, {
+            _id: {'$nin': _.pluck(itemsFound, '_id')}
+          });
+        }
+        schema.statics.findOneRandom.call(_this, conditions, fields, options, function (err, doc) {
+          if (err) {
+            loop.break();
+            return args.callback(err, undefined);
+          }
+          if (!doc) {
+            loop.break();
+          }
+          itemsFound.push(doc);
+          loop.next();
+        });
+      },
+      function () {
+        return args.callback(undefined, itemsFound);
+      }
+    );
+
+  };
+
 
   var checkParams = function (conditions, fields, options, callback) {
     if (typeof conditions === 'function') {
