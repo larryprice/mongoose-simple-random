@@ -3,10 +3,16 @@ module.exports = exports = function (schema) {
     var args = checkParams(conditions, fields, options, callback);
 
     var limit = 1;
+    var populate;
 
     if (args.options.limit) {
       limit = args.options.limit;
       delete args.options.limit;
+    }
+
+    if (args.options.populate) {
+      populate = args.options.populate;
+      delete args.options.populate;
     }
 
     var _this = this;
@@ -21,7 +27,11 @@ module.exports = exports = function (schema) {
       var start = Math.floor(Math.random() * (num - limit + 1));
       args.options.skip = start;
       args.options.limit = limit;
-      _this.find(args.conditions, args.fields, args.options).exec(function (err, docs) {
+      var find = _this.find(args.conditions, args.fields, args.options);
+      if (populate) {
+        find.populate(populate);
+      }
+      find.exec(function (err, docs) {
         if (err) {
           return args.callback(err, undefined);
         }
@@ -32,10 +42,15 @@ module.exports = exports = function (schema) {
 
   schema.statics.findOneRandom = function (conditions, fields, options, callback) {
     var args = checkParams(conditions, fields, options, callback);
+    var populate;
 
     if (args.options.limit) {
-      limit = args.options.limit;
       delete args.options.limit;
+    }
+
+    if (args.options.populate) {
+      populate = args.options.populate;
+      delete args.options.populate;
     }
 
     var _this = this;
@@ -46,7 +61,11 @@ module.exports = exports = function (schema) {
       }
       var start = Math.floor(num * Math.random());
       args.options.skip = start;
-      _this.findOne(args.conditions, args.fields, args.options).exec(function (err, doc) {
+      var find = _this.findOne(args.conditions, args.fields, args.options);
+      if (populate) {
+        find.populate(populate);
+      }
+      find.exec(function (err, doc) {
         if (err) {
           return args.callback(err, undefined);
         }

@@ -1,6 +1,7 @@
 var random = require('../mongoose-simple-random'),
   mockgoose = require('mockgoose'),
   mongoose = require('mongoose'),
+  async = require('async'),
   Schema = mongoose.Schema,
   should = require('chai').should();
 
@@ -14,7 +15,8 @@ describe('mongoose-simple-random', function () {
       mockgoose.reset();
 
       var s = new Schema({
-        message: String
+        message: String,
+        urls: [ { type: Schema.Types.ObjectId, ref: "Url" } ]
       });
       s.plugin(random);
       Test = mongoose.model('Test', s);
@@ -64,6 +66,56 @@ describe('mongoose-simple-random', function () {
             result[i].should.not.be.equal(result[j]);
           }
         }
+        done();
+      });
+    });
+  });
+
+  describe('document population', function () {
+    var urls = ['https://www.npmjs.com','https://github.com'];
+
+    before(function (done){
+      mockgoose.reset();
+
+      var u = new Schema({ url: String });
+      var Url = mongoose.model('Url', u);
+      var urlIds = [];
+      var tasks = [];
+
+      urls.forEach(function (url) {
+        tasks.push(function (cb) {
+          Url.create({ url: url }, function (err, url) {
+            urlIds.push(url._id);
+            cb();
+          });
+        });
+      });
+
+      tasks.push(function (cb) {
+        Test.create({ message: 'stuff', urls: urlIds }, function () { cb(); });
+      });
+
+      async.waterfall(tasks, function () { done(); });
+    });
+
+    it('gets ids without populating document', function (done) {
+      Test.findOneRandom(function (err, result) {
+        result.urls.length.should.equal(2);
+        for (var i = 0; i < result.urls.length; i++) {
+          result.urls[i].should.be.instanceOf(mongoose.Types.ObjectId);
+        }
+        done();
+      });
+    });
+
+    it('populates document with url objects', function (done) {
+      Test.findOneRandom({}, {}, {
+        populate: 'urls'
+      }, function (err, result) {
+        result.urls.length.should.equal(2);
+        result.urls.forEach(function (urlObject, i) {
+          urlObject.url.should.equal(urls[i]);
+        });
         done();
       });
     });
