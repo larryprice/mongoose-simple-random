@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/larryprice/mongoose-simple-random",
   "devDependencies": {
+    "async": "^1.4.2",
     "chai": "^1.9.1",
     "mocha": "^1.21.4",
     "mockgoose": "^1.10.2",
