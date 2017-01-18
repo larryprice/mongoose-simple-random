@@ -31,7 +31,11 @@ module.exports = exports = function (schema) {
       if (populate) {
         find.populate(populate);
       }
-      find.exec(function (err, docs) {
+      if (args.options.sort) {
+         find.sort(args.options.sort);
+      }
+
+      find.exec(function(err, docs) {
         if (err) {
           return args.callback(err, undefined);
         }
