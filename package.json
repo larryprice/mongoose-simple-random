@@ -24,10 +24,10 @@
   },
   "homepage": "https://github.com/larryprice/mongoose-simple-random",
   "devDependencies": {
-    "async": "^1.4.2",
-    "chai": "^1.9.1",
-    "mocha": "^1.21.4",
-    "mockgoose": "^1.10.2",
-    "mongoose": "^3.8.15"
+    "async": "^2.1.4",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "mockgoose": "^6.0.8",
+    "mongoose": "^4.7.7"
   }
 }
