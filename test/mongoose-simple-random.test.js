@@ -2,7 +2,6 @@ var random = require('../mongoose-simple-random'),
   mockgoose = require('mockgoose'),
   mongoose = require('mongoose'),
   async = require('async'),
-  Schema = mongoose.Schema,
   should = require('chai').should();
 
 mockgoose(mongoose);
@@ -11,31 +10,39 @@ describe('mongoose-simple-random', function () {
   var Test;
 
   describe('multiple documents', function () {
-    before(function () {
-      mockgoose.reset();
+    before(function (done) {
+      mockgoose(mongoose).then(function() {
+        mongoose.connect('mongodb://localhost/mydb', function() {
+          var s = new mongoose.Schema({
+            message: String,
+            urls: [ { type: mongoose.Schema.Types.ObjectId, ref: "Url" } ]
+          });
+          s.plugin(random);
+          Test = mongoose.model('Test', s);
 
-      var s = new Schema({
-        message: String,
-        urls: [ { type: Schema.Types.ObjectId, ref: "Url" } ]
-      });
-      s.plugin(random);
-      Test = mongoose.model('Test', s);
+          Test.create({
+            message: "this"
+          });
+          Test.create({
+            message: "is"
+          });
+          Test.create({
+            message: "not"
+          });
+          Test.create({
+            message: "a"
+          });
+          Test.create({
+            message: "drill"
+          });
 
-      Test.create({
-        message: "this"
+          done();
+        });
       });
-      Test.create({
-        message: "is"
-      });
-      Test.create({
-        message: "not"
-      });
-      Test.create({
-        message: "a"
-      });
-      Test.create({
-        message: "drill"
-      });
+    });
+
+    after(function(done) {
+      mockgoose.reset(function() {done();})
     });
 
     it('gets a single doc at random', function (done) {
@@ -75,27 +82,35 @@ describe('mongoose-simple-random', function () {
     var urls = ['https://www.npmjs.com','https://github.com'];
 
     before(function (done){
-      mockgoose.reset();
+      mockgoose.reset(function() {
+        mockgoose(mongoose).then(function() {
+          mongoose.connect('mongodb://localhost/mydb', function() {
+            var u = new mongoose.Schema({ url: String });
+            var Url = mongoose.model('Url', u);
+            var urlIds = [];
+            var tasks = [];
 
-      var u = new Schema({ url: String });
-      var Url = mongoose.model('Url', u);
-      var urlIds = [];
-      var tasks = [];
+            urls.forEach(function (url) {
+              tasks.push(function (cb) {
+                Url.create({ url: url }, function (err, url) {
+                  urlIds.push(url._id);
+                  cb();
+                });
+              });
+            });
 
-      urls.forEach(function (url) {
-        tasks.push(function (cb) {
-          Url.create({ url: url }, function (err, url) {
-            urlIds.push(url._id);
-            cb();
+            tasks.push(function (cb) {
+              Test.create({ message: 'stuff', urls: urlIds }, function () { cb(); });
+            });
+
+            async.waterfall(tasks, function () { done(); });
           });
         });
       });
+    });
 
-      tasks.push(function (cb) {
-        Test.create({ message: 'stuff', urls: urlIds }, function () { cb(); });
-      });
-
-      async.waterfall(tasks, function () { done(); });
+    after(function(done) {
+      mockgoose.reset(function() {done();})
     });
 
     it('gets ids without populating document', function (done) {
@@ -122,12 +137,20 @@ describe('mongoose-simple-random', function () {
   });
 
   describe('edge cases', function () {
-    before(function () {
-      mockgoose.reset();
+    before(function (done) {
+      mockgoose.reset(function () {
+        mockgoose(mongoose).then(function() {
+          Test.create({
+            message: "this"
+          });
 
-      Test.create({
-        message: "this"
+          done();
+        });
       });
+    });
+
+    after(function(done) {
+      mockgoose.reset(function() {done();})
     });
 
     it('gets the only document with findOne', function (done) {
@@ -170,4 +193,5 @@ describe('mongoose-simple-random', function () {
       });
     });
   });
+
 });
