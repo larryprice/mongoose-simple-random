@@ -15,6 +15,11 @@ module.exports = exports = function (schema) {
       delete args.options.populate;
     }
 
+    if (args.options.sort) {
+      sort = args.options.sort;
+      delete args.options.sort;
+    }
+
     var _this = this;
 
     _this.count(args.conditions, function (err, num) {
@@ -31,14 +36,16 @@ module.exports = exports = function (schema) {
       if (populate) {
         find.populate(populate);
       }
-      if (args.options.sort) {
-         find.sort(args.options.sort);
-      }
 
       find.exec(function(err, docs) {
         if (err) {
           return args.callback(err, undefined);
         }
+
+        // docs.sort(function(a, b) {
+        //   a
+        // });
+
         return args.callback(undefined, docs);
       });
     });
