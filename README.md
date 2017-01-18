@@ -2,7 +2,7 @@
 
 Author: Larry Price  
 Website: [larry-price.com](https://larry-price.com)  
-Email: <larry.price.dev@gmail.com> 
+Email: <larry.price.dev@gmail.com>
 
 #### Description
 
@@ -37,10 +37,10 @@ Test.findRandom({}, {}, {limit: 5}, function(err, results) {
 // Parameters match parameters for "find"
 var filter = { genre: { $in: ['adventure', 'point-and-click'] } };
 var fields = { name: 1, description: 0 };
-var options = { skip: 10, limit: 10, populate: 'mySubDoc' };
+var options = { skip: 10, limit: 10, populate: 'mySubDoc', sort: { message: 1 } };
 Test.findRandom(filter, fields, options, function(err, results) {
   if (!err) {
-    console.log(results); // 10 elements, name only, in genres "adventure" and "point-and-click" 
+    console.log(results); // 10 elements, name only, in genres "adventure" and "point-and-click"
   }
 });
 ```

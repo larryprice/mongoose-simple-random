@@ -76,6 +76,27 @@ describe('mongoose-simple-random', function () {
         done();
       });
     });
+
+    it('gets 3 docs at random and sorts them by field', function (done) {
+      Test.findRandom({}, {}, {
+        limit: 3,
+        sort: {message: 1},
+      }, function (err, result) {
+        should.not.exist(err);
+        result.should.have.length(3);
+        for (var i = 0; i < 3; ++i) {
+          result[i].should.have.property('message');
+          result[i].should.have.property('_id');
+          result[i].should.have.property('__v');
+        }
+
+        // check that they're ordered
+        result[0].message[0].should.be.below(result[1].message[0]);
+        result[1].message[0].should.be.below(result[2].message[0]);
+
+        done();
+      });
+    });
   });
 
   describe('document population', function () {
