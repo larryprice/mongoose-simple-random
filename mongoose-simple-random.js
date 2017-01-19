@@ -1,8 +1,7 @@
 module.exports = exports = function (schema) {
   schema.statics.findRandom = function (conditions, fields, options, callback) {
-    var args = checkParams(conditions, fields, options, callback)
-
-    var _this = this;
+    var args = checkParams(conditions, fields, options, callback),
+        _this = this;
 
     return _this.count(args.conditions, function(err, count) {
       var limit = 1,
@@ -45,42 +44,41 @@ module.exports = exports = function (schema) {
         return shuffle(a).slice(0, Math.max(0, n));
       };
 
-      callback(undefined, sample(range(count), limit));
+      var asyncMap = function(items, next, callback) {
+        var transformed = new Array(items.length),
+            count = 0,
+            halt = false;
 
-      // function eachOf(coll, iteratee, callback) {
-      //   // callback = once(callback || noop);
-      //   var index = 0,
-      //       completed = 0,
-      //       length = coll.length;
-      //   if (length === 0) {
-      //     callback(null);
-      //   }
-      //
-      //   function iteratorCallback(err) {
-      //     if (err) {
-      //       callback(err);
-      //     } else if (++completed === length) {
-      //       callback(null);
-      //     }
-      //   }
-      //
-      //   for (; index < length; index++) {
-      //     iteratee(coll[index], index, onlyOnce(iteratorCallback));
-      //   }
-      // }
+        items.forEach(function(item, index) {
+          next(item, function(error, transformedItem) {
+            if (halt) return;
+            if (error) {
+              halt = true;
+              return callback(error);
+            }
+            transformed[index] = transformedItem;
+            if (++count === items.length) return callback(undefined, transformed);
+          });
+        });
+      };
 
-      // args.options.skip = start;
-      // args.options.limit = limit;
-      // var find = _this.findOne(args.conditions, args.fields, args.options);
-      // if (populate) {
-      //   find.populate(populate);
-      // }
-      // find.exec(function (err, docs) {
-      //   if (err) {
-      //     return args.callback(err, undefined);
-      //   }
-      //   return args.callback(undefined, docs);
-      // });
+      var docs = [];
+      var results = asyncMap(sample(range(count), limit), (item, next) => {
+        args.options.skip = item;
+        var find = _this.findOne(args.conditions, args.fields, args.options);
+        if (populate) {
+          find.populate(populate);
+        }
+        find.exec(function (err, doc) {
+          if (err) {
+            return next(err);
+          }
+          return next(undefined, doc);
+        });
+      }, (error, contents) => {
+        if (error) { args.callback(error); }
+        args.callback(undefined, contents);
+      });
     });
 /*
     _this.count(args.conditions, function (err, num) {
