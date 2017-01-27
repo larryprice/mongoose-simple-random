@@ -63,3 +63,4 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * 0.2.0 API change - findRandom always returns array, findOneRandom returns single item
 * 0.2.1 README update
 * 0.3.0 API change - flip-flopping on "count", use "limit" to tell findByRandom how many elements to return
+* 0.4.0 Update dependencies and use a new random algorithm
