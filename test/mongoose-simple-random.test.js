@@ -136,6 +136,24 @@ describe('mongoose-simple-random', function () {
     });
   });
 
+  describe('no results', function () {
+    before(function (done) {
+      mockgoose.reset(function () {
+        mockgoose(mongoose).then(function() {
+          done();
+        });
+      });
+    });
+
+    it('doesnt freak out when no documents available', function (done) {
+      Test.findOneRandom(function (err, result) {
+        err.should.equal("findOneRandom yielded no results.");
+        should.not.exist(result);
+        done();
+      });
+    });
+  });
+
   describe('edge cases', function () {
     before(function (done) {
       mockgoose.reset(function () {
@@ -193,5 +211,4 @@ describe('mongoose-simple-random', function () {
       });
     });
   });
-
 });
