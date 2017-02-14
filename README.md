@@ -2,7 +2,7 @@
 
 Author: Larry Price  
 Website: [larry-price.com](https://larry-price.com)  
-Email: <larry.price.dev@gmail.com> 
+Email: <larry.price.dev@gmail.com>
 
 #### Description
 
@@ -40,7 +40,7 @@ var fields = { name: 1, description: 0 };
 var options = { skip: 10, limit: 10, populate: 'mySubDoc' };
 Test.findRandom(filter, fields, options, function(err, results) {
   if (!err) {
-    console.log(results); // 10 elements, name only, in genres "adventure" and "point-and-click" 
+    console.log(results); // 10 elements, name only, in genres "adventure" and "point-and-click"
   }
 });
 ```
@@ -64,3 +64,4 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * 0.2.1 README update
 * 0.3.0 API change - flip-flopping on "count", use "limit" to tell findByRandom how many elements to return
 * 0.4.0 Update dependencies and use a new random algorithm
+* 0.4.1 Fix hang on 0 results and clean up callback syntax.
