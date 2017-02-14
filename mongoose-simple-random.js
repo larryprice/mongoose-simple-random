@@ -21,6 +21,10 @@ var utils = (function () {
         count = 0,
         halt = false;
 
+    if (items.length === 0) {
+      return callback()
+    }
+
     items.forEach(function(item, index) {
       next(item, function(error, transformedItem) {
         if (halt) return;
@@ -89,7 +93,6 @@ module.exports = exports = function (schema) {
         populate = args.options.populate;
         delete args.options.populate;
       }
-
       return utils.randomMap(count, limit, (item, next) => {
         args.options.skip = item;
         var find = _this.findOne(args.conditions, args.fields, args.options);
@@ -114,7 +117,7 @@ module.exports = exports = function (schema) {
 
     args.options.limit = 1;
     this.findRandom(args.conditions, args.fields, args.options, function(err, docs) {
-      if (docs.length === 1) {
+      if (docs && docs.length === 1) {
         return args.callback(err, docs[0]);
       }
 
