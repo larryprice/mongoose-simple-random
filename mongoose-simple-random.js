@@ -96,16 +96,8 @@ module.exports = exports = function (schema) {
         if (populate) {
           find.populate(populate);
         }
-        find.exec(function (err, doc) {
-          if (err) {
-            return next(err);
-          }
-          return next(undefined, doc);
-        });
-      }, (error, contents) => {
-        if (error) { return args.callback(error); }
-        return args.callback(undefined, contents);
-      });
+        find.exec(next);
+      }, args.callback);
     });
   };
 
