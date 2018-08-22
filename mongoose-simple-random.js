@@ -53,7 +53,7 @@ var utils = (function () {
       options = {};
     }
 
-    if (options.skip) {
+    if (options && options.skip) {
       delete options.skip;
     }
 
