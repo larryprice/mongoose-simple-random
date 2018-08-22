@@ -76,7 +76,7 @@ module.exports = exports = function (schema) {
     var args = utils.checkParams(conditions, fields, options, callback),
         _this = this;
 
-    return _this.count(args.conditions, function(err, count) {
+    return _this.countDocuments(args.conditions, function(err, count) {
       var limit = 1,
         populate = null;
       if (err) {
